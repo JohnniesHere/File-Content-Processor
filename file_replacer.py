@@ -8,8 +8,22 @@ class FileProcessorApp:
     def __init__(self, root):
         self.root = root
         self.root.title("File Content Processor")
-        self.root.geometry("600x550")
+        self.root.geometry("600x600")
         self.root.configure(bg='#f0f0f0')
+        
+        # Define supported file types
+        self.supported_extensions = {
+            'Text Files': ['.txt'],
+            'Log Files': ['.log'],
+            'Web Files': ['.html', '.htm', '.css', '.js'],
+            'Data Files': ['.csv', '.json', '.xml', '.yaml', '.yml'],
+            'Programming Files': ['.py', '.cpp', '.h', '.cs', '.java'],
+            'Configuration Files': ['.cfg', '.ini'],
+            'Script Files': ['.bat', '.ps1', '.sh'],
+            'Documentation': ['.md'],
+            'Database Files': ['.sql'],
+            'Other Text Files': ['No extension files']  # For files without extension
+        }
         
         # Create main frame
         self.main_frame = tk.Frame(root, bg='#f0f0f0')
@@ -38,6 +52,20 @@ class FileProcessorApp:
         )
         self.select_button.pack(pady=(0, 10))
         
+        # Info button
+        self.info_button = tk.Button(
+            self.main_frame,
+            text="Supported File Types",
+            command=self.show_supported_types,
+            width=20,
+            bg='#4a90e2',
+            fg='white',
+            font=("Arial", 8),
+            relief=tk.RAISED,
+            cursor="hand2"
+        )
+        self.info_button.pack(pady=(0, 10))
+        
         # Selected file label
         self.file_label = tk.Label(
             self.main_frame,
@@ -59,7 +87,7 @@ class FileProcessorApp:
             self.main_frame,
             width=50
         )
-        self.text_to_find.insert(0, 'DefaultValue="0"')
+        self.text_to_find.insert(0, 'Text you want to delete/replace. CASE SENSITIVE')
         self.text_to_find.pack(pady=(0, 20))
         
         # Operation selection frame
@@ -87,7 +115,7 @@ class FileProcessorApp:
         
         self.delete_radio = tk.Radiobutton(
             self.operation_frame,
-            text="Delete line",
+            text="Delete lines",
             variable=self.operation_var,
             value="delete",
             command=self.toggle_replacement_entry,
@@ -101,19 +129,19 @@ class FileProcessorApp:
             bg='#f0f0f0'
         )
         self.replacement_frame.pack(fill='x', pady=(0, 20))
-        
+
         tk.Label(
             self.replacement_frame,
             text="Replacement Text:",
             bg='#f0f0f0',
             font=("Arial", 10)
         ).pack()
-        
+
         self.replacement_text = tk.Entry(
-            self.replacement_frame,
+            self.replacement_frame,  # <-- Changed parent to replacement_frame
             width=50
         )
-        self.replacement_text.insert(0, "replace text here")
+        self.replacement_text.insert(0, "Replacement text here")
         self.replacement_text.pack()
         
         # Process button
@@ -142,24 +170,75 @@ class FileProcessorApp:
         
         self.selected_file = None
 
+    def is_text_file(self, filepath):
+        """Simple check if file is text file"""
+        try:
+            with open(filepath, 'r', encoding='utf-8') as file:
+                file.read(4096)
+            return True, None
+        except Exception as e:
+            return False, str(e)
+
+    def is_supported_extension(self, filepath):
+        """Check if file extension is in supported list"""
+        ext = os.path.splitext(filepath)[1].lower()
+        return any(ext in exts for exts in self.supported_extensions.values())
+
     def toggle_replacement_entry(self):
+        """Show/hide replacement text entry based on operation"""
         if self.operation_var.get() == "delete":
             self.replacement_frame.pack_forget()
         else:
             self.replacement_frame.pack(fill='x', pady=(0, 20))
 
     def select_file(self):
+        """Handle file selection"""
+        filetypes = [("All Supported Files", "*.*")]
+        for category, extensions in self.supported_extensions.items():
+            if extensions:
+                ext_string = " ".join(f"*{ext}" for ext in extensions)
+                filetypes.append((category, ext_string))
+
         file_path = filedialog.askopenfilename(
             title="Select File",
-            filetypes=[("Text files", "*.txt"), ("All files", "*.*")]
+            filetypes=filetypes
         )
+        
         if file_path:
+            # Check if file type is supported
+            is_text, error = self.is_text_file(file_path)
+            
+            if not is_text:
+                messagebox.showerror(
+                    "Unsupported File Type",
+                    "This file appears to be binary or corrupted.\n"
+                    "Only text-based files are supported."
+                )
+                return
+            
             self.selected_file = file_path
             self.file_label.config(text=f"Selected file: {file_path}")
             self.process_button.config(state=tk.NORMAL)
             self.status_label.config(text="")
 
+    def show_supported_types(self):
+        """Show dialog with supported file types"""
+        info_text = "Supported File Types:\n\n"
+        for category, extensions in self.supported_extensions.items():
+            if extensions:
+                ext_list = ", ".join(extensions)
+                info_text += f"{category}:\n{ext_list}\n\n"
+        
+        info_text += "\nNotes:\n"
+        info_text += "- Files must be text-based\n"
+        info_text += "- Files must not be locked by other programs\n"
+        info_text += "- Files must have read/write permissions\n"
+        info_text += "- Files should use standard text encoding (UTF-8)"
+        
+        messagebox.showinfo("Supported File Types", info_text)
+
     def process_file(self):
+        """Process the selected file"""
         if not self.selected_file:
             messagebox.showerror("Error", "No file selected!")
             return

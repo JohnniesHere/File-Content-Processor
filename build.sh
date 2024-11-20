@@ -4,6 +4,6 @@
 pip install pyinstaller
 
 # Create the executable
-pyinstaller --onefile --windowed --name FileReplacer file_replacer.py
+pyinstaller --onefile --windowed --name FileContentProcessor file_replacer.py
 
 echo "Executable creation completed!"
