@@ -1,7 +1,8 @@
 # File Content Processor 🗂️
 
 A simple, user-friendly GUI application for finding and replacing/deleting text in files. The application supports various text-based file formats and automatically creates backups before making any changes.
-![image](https://github.com/user-attachments/assets/039760ff-63df-42ce-8795-26ca3476f14b)
+![image](https://github.com/user-attachments/assets/791257ef-e8fb-4f98-ab45-fb929be0c2b0)
+
 
 ## 🚀 Features
 
