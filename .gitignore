@@ -1,4 +1,5 @@
 # PyInstaller
+dist/
 build/
 *.spec
 *.toc
