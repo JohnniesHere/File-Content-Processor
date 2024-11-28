@@ -1,65 +1,54 @@
 # File Content Processor 🗂️
 
-A simple, user-friendly GUI application for finding and replacing/deleting text in files. The application supports various text-based file formats and automatically creates backups before making any changes.
-![image](https://github.com/user-attachments/assets/791257ef-e8fb-4f98-ab45-fb929be0c2b0)
+A user-friendly GUI application for finding and manipulating text in files. Features a modern interface with dark/light theme support, regular expression capabilities, and automatic backup creation before any modifications.
+![image](https://github.com/user-attachments/assets/fc4b683c-c918-4145-9e91-6beca4faf1ef)
 
 
 ## 🚀 Features
 
-- Simple and intuitive graphical interface
+- Modern graphical interface with dark/light theme support
 - Support for multiple text-based file formats
-- Case-sensitive text search
-- Two operation modes: Replace or Delete
+- Regular expression search support
+- Case-sensitive/insensitive text search
+- Three operation modes:
+  - Replace matched text
+  - Replace entire line
+  - Delete matching lines
 - Automatic backup creation
 - Clear operation feedback
 - File type validation
 
 ## 💻 System Requirements
 
-### Minimum Requirements
-- Operating System: Windows 7/8/10/11 (32-bit or 64-bit)
-- RAM: 256MB (512MB+ recommended)
-- Disk Space: 50MB
-- Display: 800x600 resolution or higher
-
 ### For Developers (Source Code)
 - Python 3.6 or higher
 - Required Python packages:
   - tkinter (usually comes with Python)
+  - sv-ttk (for theme support)
   - pyinstaller (for building executable)
 
 ## 📥 Installation & Setup
 
-### Option 1: Executable (Windows Users)
-1. Download the latest release of `FileContentProcessor.exe`
-2. No installation needed - just double-click to run
-3. No additional dependencies required
-
-### Option 2: From Source Code
+### From Source Code
 1. Clone the repository:
    ```bash
    git clone https://github.com/yourusername/file-content-processor.git
    cd file-content-processor
    ```
 
-2. Install PyInstaller (if you want to build the executable):
+2. Install required packages:
    ```bash
-   pip install pyinstaller
+   pip install sv-ttk pyinstaller
    ```
 
 3. Build the executable:
    ```bash
-   pyinstaller --onefile --windowed --name FileContentProcessor file_processor.py
+   pyinstaller --onefile --windowed --name FileContentProcessor file_replacer.py
    ```
    Or use the provided build script:
    ```bash
    chmod +x build.sh
    ./build.sh
-   ```
-
-4. Run directly with Python:
-   ```bash
-   python file_processor.py
    ```
 
 ## 📝 Supported File Types
@@ -79,12 +68,17 @@ A simple, user-friendly GUI application for finding and replacing/deleting text 
 
 1. Launch the application
 2. Click "Select File" to choose your file
-3. Enter the text you want to find (Case Sensitive)
+3. Configure search options:
+   - Enter the text to find
+   - Toggle "Use Regular Expression" if needed
+   - Toggle "Case Sensitive" as required
 4. Choose your operation:
-   - **Replace with text**: Replaces found text with new text
-   - **Delete lines**: Removes entire lines containing the found text
+   - **Replace matched text**: Replaces only the matched text
+   - **Replace entire line**: Replaces the whole line containing the match
+   - **Delete line**: Removes lines containing the matched text
 5. If replacing, enter your replacement text
 6. Click "Process File" to execute the operation
+7. Use "Toggle Dark mode" button to switch between light and dark themes
 
 ## 💾 Backup System
 
@@ -92,13 +86,13 @@ A simple, user-friendly GUI application for finding and replacing/deleting text 
 - Backup files are created in the same directory as the source file
 - Backup filename format: `originalname.extension.backup`
 - Always keeps the latest backup
-- Restoring from backup:
-  1. Delete or rename the modified file
-  2. Remove the `.backup` extension from the backup file
+- Easy reversion using the "Revert Last Change" button
 
 ## ⚠️ Important Notes
 
-1. **Case Sensitivity**: All text searches are case-sensitive
+1. **Search Options**:
+   - Regular expression support for advanced pattern matching
+   - Optional case-sensitivity
 2. **File Access**:
    - Files must not be locked by other programs
    - User must have read/write permissions
@@ -109,6 +103,7 @@ A simple, user-friendly GUI application for finding and replacing/deleting text 
 ## 🔒 Safety Features
 
 - Automatic backup creation
+- One-click revert functionality
 - File type validation
 - Error handling with user-friendly messages
 - Read/write permission checking
@@ -128,7 +123,10 @@ A simple, user-friendly GUI application for finding and replacing/deleting text 
    - Close any programs using the file
    - Check if file is marked as read-only
 
+4. **"Invalid regular expression"**
+   - Check your regex pattern syntax
+   - Disable regex mode for literal string matching
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
